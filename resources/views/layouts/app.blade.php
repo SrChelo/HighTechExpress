@@ -172,9 +172,9 @@
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Iniciar Sesión') }}</a>
                                 @else
                                 {{ Auth::user()->name }}
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                <a href="{{ route('logout') }}" onclick="event.preventDefault();
                                            document.getElementById('logout-form').submit();">
-                                    Cerrar Sesión
+                                    <button type="button" class="btn btn-light">Cerrar Sesión</button>
                                 </a>
 
                                 <form id="logout-form" action="{{ route('logout') }}" method="POST"
