@@ -65,7 +65,7 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {        
-        $role = Role::findOrFail(5);
+        $role = Role::findOrFail(1);
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],

@@ -37,10 +37,11 @@
                 <a href="{{ route('usuarios.show',$user->id) }}"><button type="button" class="btn btn-info">Ver</button></a>
                 <a href="{{ route('usuarios.edit',$user->id) }}"><button type="button" class="btn btn-primary">Editar</button></a>
                 @if (Auth::user()->id === $user->id)
+
                 @else
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="btn btn-secondary">Eliminar</button>
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="btn btn-secondary">Eliminar</button>
                 @endif
               </form>
             </td>
