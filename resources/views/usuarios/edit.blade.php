@@ -26,6 +26,23 @@
             <input id="email" type="email" name="email" value="{{ $user->email }}" required="required" autocomplete="email" class="form-control ">
         </div>
     </div>
+    <div class="form-group row">
+        <label for="rol" class="col-md-4 col-form-label text-md-right">Rol</label>
+        <div class="col-md-6">
+            <select name="rol" id="rol" class="form-control ">
+                @if(!$role->id)
+                    <option selected disabled>Chose an option</option>
+                @endif
+                @foreach($roles as $rol)
+                    @if($rol->id == $role->id)
+                        <option value="{{ $rol->id }}" selected>{{ $rol->name }}</option>
+                    @else
+                        <option value="{{ $rol->id }}">{{ $rol->name }}</option>
+                    @endif
+                @endforeach                
+            </select>
+        </div>
+    </div>
     <div class="form-group row mb-0">
         <div class="col-md-6 offset-md-4">
             <button type="submit" class="btn btn-primary">Editar</button>

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class User extends Authenticatable
 {
@@ -36,4 +37,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function roles(){
+        return $this->belongsToMany(Role::class)->withTimestamps();
+    }
+
+    public function asignarRol($role){
+        $this->roles()->sync($role,false);
+    }
+    public function tieneRole(){
+        return $this->roles->flatten()->unique();
+    }
+    
+    public function tieneRol(){
+        return $this->roles->flatten()->pluck('name')->unique();
+    }
 }

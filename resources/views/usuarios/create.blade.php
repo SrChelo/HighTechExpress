@@ -16,6 +16,17 @@
         </div>
     </div>
     <div class="form-group row">
+        <label for="rol" class="col-md-4 col-form-label text-md-right">Rol</label>
+        <div class="col-md-6">
+            <select name="rol" id="rol" class="form-control ">
+                <option selected disabled>Chose an option</option>
+                @foreach($roles as $rol)
+                    <option value="{{ $rol->id }}">{{ $rol->name }}</option>
+                @endforeach
+            </select>
+        </div>
+    </div>
+    <div class="form-group row">
         <label for="password" class="col-md-4 col-form-label text-md-right">Password</label>
         <div class="col-md-6">
             <input id="password" type="password" name="password" required="required" autocomplete="new-password" class="form-control ">

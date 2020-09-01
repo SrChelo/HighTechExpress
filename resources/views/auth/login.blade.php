@@ -50,7 +50,6 @@
                                 </div>
                             </div>
                         </div>
-
                         <div class="form-group row mb-0">
                             <div class="col-md-8 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
@@ -62,6 +61,12 @@
                                         {{ __('Forgot Your Password?') }}
                                     </a>
                                 @endif
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-8 offset-md-4">
+                            Don't have an account?
+                            <a href="{{ route('register') }}" class="btn btn-link">Click here to create it!</a>
                             </div>
                         </div>
                     </form>

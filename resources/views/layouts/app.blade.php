@@ -8,15 +8,15 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>AdminLTE 3</title>
+    <title>High Tech Express</title>
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
-    <script src="dist/js/adminlte.js"></script>
+    <script src="{{ asset('dist/js/adminlte.js') }}"></script>
 
     <!-- Font Awesome Icons -->
-    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -26,11 +26,12 @@
     <link href="{{ asset('dist/css/adminlte.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
 </head>
-
+<?php use App\User;?>
 <body class="hold-transition sidebar-mini layout-fixed">
     <div id="app">
         <div class="wrapper">
-
+            @guest
+            @else
             <!-- Navbar -->
             <nav class="main-header navbar navbar-expand navbar-white navbar-light">
                 <!-- Left navbar links -->
@@ -41,9 +42,9 @@
                 </ul>
 
                 <!-- SEARCH FORM -->
-                <form class="form-inline ml-3">
+                <form class="form-inline ml-3" acction="">
                     <div class="input-group input-group-sm">
-                        <input class="form-control form-control-navbar" type="search" placeholder="Search"
+                        <input class="form-control form-control-navbar" name="search" type="search" placeholder="Search"
                             aria-label="Search">
                         <div class="input-group-append">
                             <button class="btn btn-navbar" type="submit">
@@ -65,7 +66,7 @@
                             <a href="#" class="dropdown-item">
                                 <!-- Message Start -->
                                 <div class="media">
-                                    <img src="dist/img/user1-128x128.jpg" alt="User Avatar"
+                                    <img src="{{ asset('dist/img/user1-128x128.jpg') }}" alt="User Avatar"
                                         class="img-size-50 mr-3 img-circle">
                                     <div class="media-body">
                                         <h3 class="dropdown-item-title">
@@ -83,7 +84,7 @@
                             <a href="#" class="dropdown-item">
                                 <!-- Message Start -->
                                 <div class="media">
-                                    <img src="dist/img/user8-128x128.jpg" alt="User Avatar"
+                                    <img src="{{ asset('dist/img/user8-128x128.jpg') }}" alt="User Avatar"
                                         class="img-size-50 img-circle mr-3">
                                     <div class="media-body">
                                         <h3 class="dropdown-item-title">
@@ -101,7 +102,7 @@
                             <a href="#" class="dropdown-item">
                                 <!-- Message Start -->
                                 <div class="media">
-                                    <img src="dist/img/user3-128x128.jpg" alt="User Avatar"
+                                    <img src="{{ asset('dist/img/user3-128x128.jpg') }}" alt="User Avatar"
                                         class="img-size-50 img-circle mr-3">
                                     <div class="media-body">
                                         <h3 class="dropdown-item-title">
@@ -154,7 +155,7 @@
             <aside class="main-sidebar sidebar-dark-primary elevation-4">
                 <!-- Brand Logo -->
                 <a href="{{ url('/') }}" class="brand-link">
-                    <img src="dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+                    <img src="{{ asset('dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
                         style="opacity: .8">
                     <span class="brand-text font-weight-light">High Tech Express</span>
                 </a>
@@ -164,26 +165,27 @@
                     <!-- Sidebar user panel (optional) -->
                     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                         <div class="image">
-                            <img src="dist/img/user2-160x160.jpg" class="img-circle elevation-2" alt="User Image">
+                            <img src="{{ asset('dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="User Image">
                         </div>
                         <div class="info">
-                            <a href="#" class="d-block">
-                                @guest
+                            @guest
                                 <a class="nav-link" href="{{ route('login') }}">{{ __('Iniciar Sesión') }}</a>
-                                @else
-                                {{ Auth::user()->name }}
-                                <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
-                                           document.getElementById('logout-form').submit();">
-                                    Cerrar Sesión
-                                </a>
+                            @else
+                                <div class="container">
+                                    <div class="row">
+                                        <a href="#" class="">{{ Auth::user()->name }}</a>
+                                    </div>
+                                    <div class="row">
+                                        <button type="button" class="btn btn-dark" onclick="event.preventDefault();
+                                                document.getElementById('logout-form').submit();">Cerrar Sesión</button>
+                                            <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                                style="display: none;">
+                                                @csrf
+                                            </form>
+                                    </div>
+                                </div>
 
-                                <form id="logout-form" action="{{ route('logout') }}" method="POST"
-                                    style="display: none;">
-                                    @csrf
-                                </form>
-
-                                @endguest
-                            </a>
+                            @endguest
                         </div>
                     </div>
 
@@ -199,17 +201,32 @@
                                 </a>
                             </li>
 
+                            @can('Administrador')
                             <li class="nav-item">
-                                <a href="usuarios"
+                                <a href="{{ route('usuarios.index') }}"
                                     class="{{ Request::path() === 'usuarios' ? 'nav-link active' : 'nav-link' }}">
                                     <i class="nav-icon fas fa-users"></i>
                                     <p>
                                         Usuarios
-                                        <?php use App\User; $users_count = User::all()->count(); ?>
-                                        <span class="right badge badge-danger">{{ $users_count ?? '0' }}</span>
+                                    @guest
+                                        <span class="right badge badge-danger">0</span>
+                                    @else
+                                        <?php $users_count = DB::table('users')->count(); ?>
+                                        <span class="right badge badge-danger">{{ $users_count ?? '0'}}</span>
+                                    @endguest
                                     </p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="{{ route('roles.index') }}"
+                                    class="{{ Request::path() === 'roles' ? 'nav-link active' : 'nav-link' }}">
+                                    <i class="nav-icon fas fa-sitemap"></i>
+                                    <p>
+                                        Roles
+                                    </p>
+                                </a>
+                            </li>
+                            @endcan
 
                             <li class="nav-item has-treeview">
                                 <a href="#" class="nav-link">
@@ -247,9 +264,13 @@
                 </div>
                 <!-- /.sidebar -->
             </aside>
-
+            @endguest
             <!-- Content Wrapper. Contains page content -->
+            @guest
+            <div class="content">
+            @else
             <div class="content-wrapper">
+            @endguest
                 <!-- Content Header (Page header) -->
                 <div class="content-header">
 
@@ -263,13 +284,6 @@
                 <!-- /.content -->
             </div>
             <!-- /.content-wrapper -->
-            <footer class="main-footer">
-                <!-- NO QUITAR -->
-                <strong>Tutoriales YouTube
-                    <div class="float-right d-none d-sm-inline-block">
-                        <b>Version</b> 1.0
-                    </div>
-            </footer>
 
             <!-- Control Sidebar -->
             <aside class="control-sidebar control-sidebar-dark">
