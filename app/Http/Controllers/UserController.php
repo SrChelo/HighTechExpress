@@ -17,6 +17,10 @@ class UserController extends Controller
             return redirect('/');
         }
     }
+    // private function verifyAd(){
+    //     $this->verify();
+    //     if(Auth::user()->)
+    // }
     /**
      * Display a listing of the resource.
      *
@@ -74,7 +78,9 @@ class UserController extends Controller
     public function show($id)
     {
         $this->verify();
-        return view('usuarios.show',['user'=>User::findOrFail($id)]);
+        $user = User::findOrFail($id);
+        $role = $user->tieneRol()[0];
+        return view('usuarios.show',['user'=>$user,'role'=>$role,'auth'=>Auth::user()]);
     }
 
     /**
