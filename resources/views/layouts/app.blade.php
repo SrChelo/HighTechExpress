@@ -235,24 +235,24 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="notas/todas"
-                                            class="{{ Request::path() === 'notas/todas' ? 'nav-link active' : 'nav-link' }}">
-                                            <i class="far fa-circle nav-icon"></i>
+                                        <a href="{{ route('enviosAdd') }}"
+                                            class="{{ Request::path() === 'admin/envios' ? 'nav-link active' : 'nav-link' }}">
+                                            <i class="{{ Request::path() === 'envio' ? 'fas' : 'far' }} fa-circle nav-icon"></i>
                                             <p>Todas</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="notas/favoritas"
+                                        <a href=""
                                             class="{{ Request::path() === 'notas/favoritas' ? 'nav-link active' : 'nav-link' }}">
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>Favoritas</p>
+                                            <p>En Espera</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="notas/archivadas"
                                             class="{{ Request::path() === 'notas/archivadas' ? 'nav-link active' : 'nav-link' }}">
                                             <i class="far fa-circle nav-icon"></i>
-                                            <p>Archivadas</p>
+                                            <p>Terminado</p>
                                         </a>
                                     </li>
                                 </ul>

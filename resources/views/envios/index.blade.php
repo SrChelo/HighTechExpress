@@ -1,0 +1,68 @@
+@extends('layouts.app')
+@section('content')
+    <table class="table table-hover">
+  <thead>
+    <tr class="bg-dark">
+      <th scope="col">ID</th>
+      <th scope="col">Tipo</th>
+      <th scope="col">Weight</th>
+      <th scope="col">Dimension</th>
+      <th scope="col">Out Date</th>
+      <th scope="col">Arrival Date</th>
+      <th scope="col">Out Place</th>
+      <th scope="col">Arrival Place</th>
+      <th scope="col">Description</th>
+      <th scope="col">Status</th>
+      @can('Administrador')
+      <th scope="col"></th>
+      <th scope="col"></th>
+      @endcan
+    </tr>
+  </thead>
+  <tbody>
+    @foreach($envios as $envio)
+        <tr>
+            <th scope="row">{{$envio->id}}</th>
+            <td>{{$envio->nombre}}</td>
+            <td>{{$envio->weight}}</td>
+            <td>{{$envio->dimen}}</td>
+            <td>{{$envio->date_a}}</td>
+            <td>{{$envio->date_b}}</td>
+            <td>{{$envio->place_a}}</td>
+            <td>{{$envio->place_b}}</td>
+            <td>{{$envio->description}}</td>
+            @switch($envio->state)
+            @case('En Espera')
+            <td class="bg-info">
+            @break
+            @case('Denegado')
+            <td class="bg-danger">
+            @break
+            @case('En Camino')
+            <td class="bg-warning">
+            @break
+            @case('Terminado')
+            <td class="bg-success">
+            @break
+            @endswitch{{$envio->state}}
+            </td>
+            @can('Administrador')
+            <td class="">
+            
+              <form action="{{ route('denegarAdd', $envio->id) }}" method="POST" class="justify-content-center">
+                @csrf
+                <button type="submit" class="btn btn-secondary">Denegar</button>
+              </form>
+            </td>
+            <td class="">
+            <form action="{{ route('aceptarAdd', $envio->id) }}" method="POST" class="justify-content-center">
+                @csrf
+                <button type="submit" class="btn btn-secondary">Aceptar</button>
+              </form>
+            </td>
+            @endcan
+            </tr>
+    @endforeach
+  </tbody>  
+</table>
+@endsection

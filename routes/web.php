@@ -19,3 +19,10 @@ Route::get('/', 'HomeController@index')->name('home');
 Route::get('/home','HomeController@index');
 Route::resource('/usuarios','UserController')->middleware('auth');
 Route::resource('/roles', 'RoleController')->middleware('auth');
+Route::resource('/envio','EnvioController')->middleware('auth');
+Route::get('/envios','SolicitudController@showSome')->name('envios');
+Route::get('/admin/envios','SolicitudController@showAll')->name('enviosAdd');
+Route::post('/admin/denegar/{id}','SolicitudController@denegar')->name('denegarAdd');
+Route::post('/admin/aceptar/{id}','SolicitudController@aceptar')->name('aceptarAdd');
+Auth::routes();
+

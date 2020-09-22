@@ -1,6 +1,5 @@
 @extends('layouts.app')
 @section('content')
-{{$auth->id}}
     @switch($role)
       @case('Administrador')
         <div class="jumbotron bg-dark jumbotron-fluid ">

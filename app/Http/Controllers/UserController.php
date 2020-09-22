@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use App\User;
 use App\Role;
+use App\Home;
 
 class UserController extends Controller
 {
@@ -17,10 +18,14 @@ class UserController extends Controller
             return redirect('/');
         }
     }
-    // private function verifyAd(){
-    //     $this->verify();
-    //     if(Auth::user()->)
-    // }
+    private function verifyAd(){
+        $this->verify();
+        $role = Role::findOrFail(User::findOrFail(Auth::user()->id)->tieneRole()[0]->id);
+        $reg = "/2/i";
+        if(!preg_match($reg,$role->id)){
+            return redirect('/');
+        }
+    }
     /**
      * Display a listing of the resource.
      *
@@ -28,6 +33,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $this->verifyAd();
         if($request){
             $query = trim($request->get('search'));
             $users = User::where('name','LIKE','%'.$query.'%')->orderBy('id','asc')->paginate(10);
@@ -44,7 +50,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $this->verify();
+        $this->verifyAd();
         return view("usuarios.create",["roles"=>Role::all()]);
     }
 
@@ -56,7 +62,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $this->verify();
+        $this->verifyAd();
         $usuario = new User();
 
         $usuario->name = request('name');
@@ -77,10 +83,10 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        $this->verify();
+        $this->verifyAd();
         $user = User::findOrFail($id);
         $role = $user->tieneRol()[0];
-        return view('usuarios.show',['user'=>$user,'role'=>$role,'auth'=>Auth::user()]);
+        return view('usuarios.show',['user'=>$user,'role'=>$role]);
     }
 
     /**
@@ -91,7 +97,7 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        $this->verify();
+        $this->verifyAd();
         $user = User::findOrFail($id);
         $role = new Role();
         if(isset($user->tieneRole()[0])){
@@ -109,7 +115,7 @@ class UserController extends Controller
      */
     public function update(UserFormRequest $request, $id)
     {
-        $this->verify();
+        $this->verifyAd();
         $usuario = User::findOrFail($id);
 
         $usuario->name = $request->get('name');
@@ -135,11 +141,10 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $this->verify();
+        $this->verifyAd();
         if(Auth::user()->id == $id){
             return redirect('/usuarios');
         }
-        $this->verify();
         $usuario = User::findOrFail($id);
         $usuario->delete();
 
