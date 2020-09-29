@@ -46,31 +46,12 @@
             @break
             @endswitch{{$envio->state}}
             </td>
-            @can('Administrador')
             <td class="">
-            
-              <form action="{{ route('denegarAdd', $envio->id) }}" method="POST" class="justify-content-center">
+            <form action="{{ route('end', $envio->id) }}" method="POST" class="justify-content-center">
                 @csrf
-                <button type="submit" class="btn btn-secondary">Denegar</button>
+                <button type="submit" class="btn btn-secondary">Finalizar</button>
               </form>
             </td>
-            <td class="">
-            <form action="{{ route('aceptarAdd', $envio->id) }}" method="POST" class="justify-content-center">
-                @csrf
-                <button type="submit" class="btn btn-secondary">Aceptar</button>
-              </form>
-            </td>
-            @endcan
-            @can('Repartidor')
-            @if($envio->state != 'Terminado')
-            <td class="">
-            <form action="{{ route('add', $envio->id) }}" method="POST" class="justify-content-center">
-                @csrf
-                <button type="submit" class="btn btn-secondary">Añadir al reparto</button>
-              </form>
-            </td>
-            @endif
-            @endcan
             </tr>
     @endforeach
   </tbody>  

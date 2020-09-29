@@ -228,7 +228,7 @@
                             </li>
                             @endcan
 
-                            <li class="nav-item has-treeview">
+                            <li class="nav-item has-treeview  menu-open">
                                 <a href="#" class="nav-link">
                                     <i class="nav-icon far fa-sticky-note"></i>
                                     <p>Solicitudes<i class="fas fa-angle-left right"></i></p>
@@ -241,20 +241,38 @@
                                             <p>Todas</p>
                                         </a>
                                     </li>
+                                    @can(['Administrador'],['Cliente'])
                                     <li class="nav-item">
-                                        <a href=""
-                                            class="{{ Request::path() === 'notas/favoritas' ? 'nav-link active' : 'nav-link' }}">
+                                        <a href="{{ route('enviosType','En Espera') }}"
+                                            class="{{ Request::path() === 'envios/estado/En%20Espera' ? 'nav-link active' : 'nav-link' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>En Espera</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="notas/archivadas"
-                                            class="{{ Request::path() === 'notas/archivadas' ? 'nav-link active' : 'nav-link' }}">
+                                        <a href="{{ route('enviosType','Denegado') }}"
+                                            class="{{ Request::path() === 'envios/estado/Denegado' ? 'nav-link active' : 'nav-link' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Denegado</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('enviosType','Terminado') }}"
+                                            class="{{ Request::path() === 'envios/estado/Terminado' ? 'nav-link active' : 'nav-link' }}">
                                             <i class="far fa-circle nav-icon"></i>
                                             <p>Terminado</p>
                                         </a>
                                     </li>
+                                    @endcan
+                                    @can('Repartidor')
+                                    <li class="nav-item">
+                                        <a href="{{ route('ruta') }}"
+                                            class="{{ Request::path() === 'repartidor' ? 'nav-link active' : 'nav-link' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Mi Ruta</p>
+                                        </a>
+                                    </li>
+                                    @endcan
                                 </ul>
                             </li>
 
