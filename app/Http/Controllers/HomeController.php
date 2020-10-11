@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 use App\User;
+use App\Envio;
 use App\Role;
 use App\TiposEnvios;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use DB;
 
 class HomeController extends Controller
 {
@@ -28,6 +30,7 @@ class HomeController extends Controller
             $admin = new User();
             $admin->name = "Admin";
             $admin->email = "admin@admin.com";
+            $admin->avatar = "admin.png";
             $admin->password = bcrypt("admin");
             $admin->save();
             $admin->asignarRol(Role::findOrFail(2));
@@ -56,12 +59,9 @@ class HomeController extends Controller
         }
         return true;
     }
-    private function verifyAd(){
-        if($this->verify()){
-            return false;
-        }
+    private function verifyAd($id){
         $role = Role::findOrFail(User::findOrFail(Auth::user()->id)->tieneRole()[0]->id);
-        $reg = "/2/i";
+        $reg = "/$id/i";
         if(!preg_match($reg,$role->id)){
             return false;
         }
@@ -74,6 +74,41 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home',['user'=>Auth::user()]);
+        if($this->verifyAd(1)){
+            return view('home',['user'=>Auth::user(),'rol'=>"si"]);
+        }
+        if($this->verifyAd(2)){
+            $cEnvios = count(Envio::all());
+            $cUsuarios = count(User::all());
+            $envios = [];
+            $users = [];
+            for($i=1;$i<=12;$i++){
+                $envios[$i-1]=count(DB::table('envios')->whereMonth('created_at', $i)->get());
+                $users[$i-1]=count(DB::table('users')->whereMonth('created_at', $i)->get());
+            }
+            return view('home',['user'=>Auth::user(),'cEnvios'=>$cEnvios,'cUsuarios'=>$cUsuarios,'envios'=>$envios,'users'=>$users]);
+        }
+        if($this->verifyAd(3)){
+            $add = DB::table('repartos')
+                      ->join('envios','envios.id','=','repartos.envio_id')
+                      ->join('tipos_envios','envios.tipo_id','=','tipos_envios.id')
+                      ->select('envios.*','repartos.*','tipos_envios.nombre')
+                      ->where('envios.state','En Camino')
+                      ->where('repartos.user_id',Auth::user()->id)
+                      ->limit(2)
+                      ->get();
+            $data = DB::table('repartos')->select('envio_id')->get();
+            $arr = [];
+            for($i=0;$i<count($data);$i++){
+                $arr[$i]=$data[$i]->envio_id;
+            }
+            $espera = DB::table('envios')
+                        ->join('tipos_envios','envios.tipo_id','=','tipos_envios.id')
+                        ->select('envios.*','tipos_envios.nombre')
+                        ->whereNotIn('envios.id',$arr)
+                        ->where('envios.state','En Camino')
+                        ->get();
+            return view('home',['user'=>Auth::user(),'ruta'=>$add,'espera'=>$espera]);
+        }
     }
 }

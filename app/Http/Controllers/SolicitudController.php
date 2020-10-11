@@ -9,13 +9,15 @@ use App\Envio;
 use App\TiposEnvios;
 use App\Reparto;
 use DB;
+use PDF;
 
 class SolicitudController extends Controller
 {
     public function showSome(){
         $envios = DB::table('envios')
                       ->join('tipos_envios','envios.tipo_id','=','tipos_envios.id')
-                      ->select('envios.*','tipos_envios.nombre')
+                      ->leftJoin('repartos','envios.id','=','repartos.envio_id')
+                      ->select('envios.*','tipos_envios.nombre','repartos.id as reparto')
                       ->where("envios.user_id",Auth::user()->id)
                       ->get();
         return view('envios.index',['envios'=>$envios]);
@@ -24,10 +26,9 @@ class SolicitudController extends Controller
         $envios = DB::table('envios')
                       ->join('tipos_envios','envios.tipo_id','=','tipos_envios.id')
                       ->select('envios.*','tipos_envios.nombre')
-                      ->where('envios.user_id',Auth::user()->id)
                       ->where('envios.state',$state)
                       ->get();
-        return view('envios.index',['envios'=>$envios]);
+        return view('envios.index',['envios'=>$envios,'state'=>$state]);
     }
     public function showAll(){
         $envios = DB::table('envios')
@@ -64,12 +65,18 @@ class SolicitudController extends Controller
     }
 
 
-    public function showSomeToAdd($state){
+    public function showSomeToAdd(){
+        $data = DB::table('repartos')->select('envio_id')->get();
+        $arr = [];
+        for($i=0;$i<count($data);$i++){
+            $arr[$i]=$data[$i]->envio_id;
+        }
         $envios = DB::table('envios')
-                      ->join('tipos_envios','envios.tipo_id','=','tipos_envios.id')
-                      ->select('envios.*','tipos_envios.nombre')
-                      ->where('envios.state','En Camino')
-                      ->get();
+                    ->join('tipos_envios','envios.tipo_id','=','tipos_envios.id')
+                    ->select('envios.*','tipos_envios.nombre')
+                    ->whereNotIn('envios.id',$arr)
+                    ->where('envios.state','En Camino')
+                    ->get();
         return view('envios.index',['envios'=>$envios]);
     }
     public function showAdded(){
@@ -78,6 +85,7 @@ class SolicitudController extends Controller
                       ->join('tipos_envios','envios.tipo_id','=','tipos_envios.id')
                       ->select('envios.*','repartos.*','tipos_envios.nombre')
                       ->where('envios.state','En Camino')
+                      ->where('repartos.user_id',Auth::user()->id)
                       ->get();
         return view('envios.ruta',['envios'=>$envios]);
     }
@@ -93,5 +101,31 @@ class SolicitudController extends Controller
         $envio->state = "Terminado";
         $envio->update();
         return redirect(route('ruta'));
+    }
+
+    public function createPDF1() {
+        // retreive all records from db
+        $envios = Envio::all();
+        // share data to view
+        // view()->share('envios',$data);
+        $pdf = PDF::loadView('envios.pdf',['envios'=>$envios])->setPaper('letter', 'landscape');
+  
+        // download PDF file with download method
+        return $pdf->download('pdf_file.pdf');
+    }
+    
+    public function createPDF2($state) {
+        // retreive all records from db
+        $envios = DB::table('envios')
+                      ->join('tipos_envios','envios.tipo_id','=','tipos_envios.id')
+                      ->select('envios.*','tipos_envios.nombre')
+                      ->where('envios.state',$state)
+                      ->get();
+        // share data to view
+        // view()->share('envios',$data);
+        $pdf = PDF::loadView('envios.pdf',['envios'=>$envios])->setPaper('letter', 'landscape');
+  
+        // download PDF file with download method
+        return $pdf->download('pdf_file.pdf');
     }
 }

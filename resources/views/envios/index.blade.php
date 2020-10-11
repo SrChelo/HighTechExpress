@@ -1,5 +1,12 @@
 @extends('layouts.app')
 @section('content')
+@can('Administrador')
+    @if($state ?? '')
+      <a class="btn btn-primary" href="{{ route('pdf2',$state ?? '') }}">Export to PDF</a>
+    @else
+      <a class="btn btn-primary" href="{{ route('pdf1') }}">Export to PDF</a>
+    @endif
+@endcan
     <table class="table table-hover">
   <thead>
     <tr class="bg-dark">
@@ -33,18 +40,27 @@
             <td>{{$envio->description}}</td>
             @switch($envio->state)
             @case('En Espera')
-            <td class="bg-info">
+            <td class="bg-secondary">
             @break
             @case('Denegado')
             <td class="bg-danger">
             @break
             @case('En Camino')
-            <td class="bg-warning">
+              @can('Cliente')
+                @if($envio->reparto != null)
+                  <td class="bg-info">
+                @else
+                    <td class="bg-warning">
+                @endif
+              @else
+              <td class="bg-warning">
+              @endcan
             @break
             @case('Terminado')
             <td class="bg-success">
             @break
-            @endswitch{{$envio->state}}
+            @endswitch
+            {{$envio->state}}
             </td>
             @can('Administrador')
             <td class="">

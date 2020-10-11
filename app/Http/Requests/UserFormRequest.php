@@ -26,7 +26,7 @@ class UserFormRequest extends FormRequest
         return [
             'name'=>'required|max:255|min:6',
             'email'=>'required|max:255|email',
-            'password'=>'min:6|confirmed'
+            'password'=>'min:8|confirmed'
         ];
     }
 }

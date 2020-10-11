@@ -68,6 +68,7 @@ class UserController extends Controller
         $usuario->name = request('name');
         $usuario->email = request('email');
         $usuario->password = bcrypt(request('password'));
+        $usuario->avatar = "default.png";
 
         $usuario->save();
         $usuario->asignarRol(Role::findOrFail(request('rol')));

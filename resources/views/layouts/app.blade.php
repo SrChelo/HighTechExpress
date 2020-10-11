@@ -12,8 +12,11 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/chart.js') }}" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
     <script src="{{ asset('dist/js/adminlte.js') }}"></script>
+    @yield('scripts')
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="{{ asset('plugins/fontawesome-free/css/all.min.css') }}">
@@ -24,7 +27,9 @@
 
     <!-- Styles -->
     <link href="{{ asset('dist/css/adminlte.min.css') }}" rel="stylesheet">
+    <link rel="shortcut icon" href="{{ asset('ICON.ico') }}" type="image/x-icon">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 </head>
 <?php use App\User;?>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -155,7 +160,7 @@
             <aside class="main-sidebar sidebar-dark-primary elevation-4">
                 <!-- Brand Logo -->
                 <a href="{{ url('/') }}" class="brand-link">
-                    <img src="{{ asset('dist/img/AdminLTELogo.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
+                    <img src="{{ asset('LOGO.png') }}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
                         style="opacity: .8">
                     <span class="brand-text font-weight-light">High Tech Express</span>
                 </a>
@@ -165,7 +170,7 @@
                     <!-- Sidebar user panel (optional) -->
                     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
                         <div class="image">
-                            <img src="{{ asset('dist/img/user2-160x160.jpg') }}" class="img-circle elevation-2" alt="User Image">
+                            <img src="{{ asset('storage/images/'.Auth::user()->avatar) }}" class="img-circle elevation-2" alt="User Image">
                         </div>
                         <div class="info">
                             @guest
@@ -173,7 +178,7 @@
                             @else
                                 <div class="container">
                                     <div class="row">
-                                        <a href="#" class="">{{ Auth::user()->name }}</a>
+                                        <a href="{{ route('profile') }}" class="">{{ Auth::user()->name }}</a>
                                     </div>
                                     <div class="row">
                                         <button type="button" class="btn btn-dark" onclick="event.preventDefault();
@@ -195,7 +200,7 @@
                             data-accordion="false">
 
                             <li class="nav-item">
-                                <a href="/" class="{{ Request::path() === '/' ? 'nav-link active' : 'nav-link' }}">
+                                <a href="{{ url('/') }}" class="{{ Request::path() === '/' ? 'nav-link active' : 'nav-link' }}">
                                     <i class="nav-icon fas fa-home"></i>
                                     <p>Inicio</p>
                                 </a>
@@ -234,6 +239,7 @@
                                     <p>Solicitudes<i class="fas fa-angle-left right"></i></p>
                                 </a>
                                 <ul class="nav nav-treeview">
+                                    @can('Administrador')
                                     <li class="nav-item">
                                         <a href="{{ route('enviosAdd') }}"
                                             class="{{ Request::path() === 'admin/envios' ? 'nav-link active' : 'nav-link' }}">
@@ -241,7 +247,6 @@
                                             <p>Todas</p>
                                         </a>
                                     </li>
-                                    @can(['Administrador'],['Cliente'])
                                     <li class="nav-item">
                                         <a href="{{ route('enviosType','En Espera') }}"
                                             class="{{ Request::path() === 'envios/estado/En%20Espera' ? 'nav-link active' : 'nav-link' }}">
@@ -263,8 +268,31 @@
                                             <p>Terminado</p>
                                         </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('enviosType','En Camino') }}"
+                                            class="{{ Request::path() === 'envios/estado/En%20Camino' ? 'nav-link active' : 'nav-link' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>En Camino</p>
+                                        </a>
+                                    </li>
+                                    @endcan
+                                    @can('Cliente')
+                                    <li class="nav-item">
+                                        <a href="{{ route('envios') }}"
+                                            class="{{ Request::path() === 'envios' ? 'nav-link active' : 'nav-link' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Todas</p>
+                                        </a>
+                                    </li>
                                     @endcan
                                     @can('Repartidor')
+                                    <li class="nav-item">
+                                        <a href="{{ route('enviosToAdd') }}"
+                                            class="{{ Request::path() === 'repartidor/todas' ? 'nav-link active' : 'nav-link' }}">
+                                            <i class="{{ Request::path() === 'envio' ? 'fas' : 'far' }} fa-circle nav-icon"></i>
+                                            <p>Todas</p>
+                                        </a>
+                                    </li>
                                     <li class="nav-item">
                                         <a href="{{ route('ruta') }}"
                                             class="{{ Request::path() === 'repartidor' ? 'nav-link active' : 'nav-link' }}">

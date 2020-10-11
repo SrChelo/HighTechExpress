@@ -16,7 +16,7 @@
         </div>
     </div>
         <div class="col">
-        <form action="/envio" method="POST">
+        <form action="{{url('/envio')}}" method="POST">
         @csrf
             <div class="form-group row">
                 <label for="wight">Weight</label>

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 <div class="container">
-<form method="POST" action="/usuarios">
+<form method="POST" action="{{url('/usuarios')}}">
 @csrf
     <div class="form-group row">
         <label for="name" class="col-md-4 col-form-label text-md-right">Name</label>
