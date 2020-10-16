@@ -75,7 +75,7 @@ class SolicitudController extends Controller
                     ->join('tipos_envios','envios.tipo_id','=','tipos_envios.id')
                     ->select('envios.*','tipos_envios.nombre')
                     ->whereNotIn('envios.id',$arr)
-                    ->where('envios.state','En Camino')
+                    ->whereIn('envios.state',['En Camino','Reprogramado'])
                     ->get();
         return view('envios.index',['envios'=>$envios]);
     }
@@ -83,14 +83,19 @@ class SolicitudController extends Controller
         $envios = DB::table('repartos')
                       ->join('envios','envios.id','=','repartos.envio_id')
                       ->join('tipos_envios','envios.tipo_id','=','tipos_envios.id')
-                      ->select('envios.*','repartos.*','tipos_envios.nombre')
-                      ->where('envios.state','En Camino')
+                      ->select('envios.*','repartos.id as reparto_id , repartos.user_id','tipos_envios.nombre')
+                      ->whereIn('envios.state',['En Camino','Reprogramado'])
                       ->where('repartos.user_id',Auth::user()->id)
                       ->get();
         return view('envios.ruta',['envios'=>$envios]);
     }
     public function Add($id){
         $reparto = new Reparto();
+        $envio = Envio::findOrFail($id);
+        if($envio->state == "Reprogramado"){
+            $envio->state = "En Camino";
+            $envio->update();
+        }
         $reparto->envio_id = $id;
         $reparto->user_id = Auth::user()->id;
         $reparto->save();
@@ -100,6 +105,16 @@ class SolicitudController extends Controller
         $envio = Envio::findOrFail($id);
         $envio->state = "Terminado";
         $envio->update();
+        $reparto = DB::table('repartos')->where('envio_id',$id);
+        $reparto->delete();
+        return redirect(route('ruta'));
+    }
+    public function rep($id){
+        $envio = Envio::findOrFail($id);
+        $envio->state = "Reprogramado";
+        $envio->update();
+        $reparto = DB::table('repartos')->where('envio_id',$id);
+        $reparto->delete();
         return redirect(route('ruta'));
     }
 

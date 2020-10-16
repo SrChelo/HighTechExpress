@@ -45,12 +45,15 @@
             @case('Denegado')
             <td class="bg-danger">
             @break
+            @case('Reprogramado')
+            <td class="bg-primary">
+            @break
             @case('En Camino')
               @can('Cliente')
                 @if($envio->reparto != null)
                   <td class="bg-info">
                 @else
-                    <td class="bg-warning">
+                  <td class="bg-warning">
                 @endif
               @else
               <td class="bg-warning">
@@ -64,28 +67,33 @@
             </td>
             @can('Administrador')
             <td class="">
-            
+            @if($envio->state!='Denegado' && $envio->state!='Terminado')
               <form action="{{ route('denegarAdd', $envio->id) }}" method="POST" class="justify-content-center">
                 @csrf
                 <button type="submit" class="btn btn-secondary">Denegar</button>
               </form>
+              @endif
             </td>
             <td class="">
+            @if($envio->state!='En Camino' && $envio->state!='Terminado' && $envio->state!='Reprogramado' )
             <form action="{{ route('aceptarAdd', $envio->id) }}" method="POST" class="justify-content-center">
                 @csrf
                 <button type="submit" class="btn btn-secondary">Aceptar</button>
               </form>
             </td>
+            @endif
             @endcan
             @can('Repartidor')
-            @if($envio->state != 'Terminado')
-            <td class="">
-            <form action="{{ route('add', $envio->id) }}" method="POST" class="justify-content-center">
-                @csrf
-                <button type="submit" class="btn btn-secondary">Añadir al reparto</button>
+              @if($envio->state != 'Terminado')
+              <td class="">
+              <form action="{{ route('add', $envio->id) }}" method="POST" class="justify-content-center">
+                  @csrf
+                  <button type="submit" class="btn btn-secondary">Añadir al reparto</button>
               </form>
-            </td>
-            @endif
+              </td>
+              <td class="">
+              </td>
+              @endif
             @endcan
             </tr>
     @endforeach

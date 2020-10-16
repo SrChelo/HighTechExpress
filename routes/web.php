@@ -31,6 +31,7 @@ Route::post('/admin/denegar/{id}','SolicitudController@denegar')->name('denegarA
 Route::post('/admin/aceptar/{id}','SolicitudController@aceptar')->name('aceptarAdd')->middleware('auth');
 Route::post('/repartidor/add/{id}','SolicitudController@Add')->name('add')->middleware('auth');
 Route::post('/repartidor/end/{id}','SolicitudController@end')->name('end')->middleware('auth');
+Route::post('/repartidor/rep/{id}','SolicitudController@rep')->name('rep')->middleware('auth');
 Route::get('/repartidor','SolicitudController@showAdded')->name('ruta')->middleware('auth');
 Route::get('/registro','UserController@register')->name('registro');
 

@@ -275,6 +275,13 @@
                                             <p>En Camino</p>
                                         </a>
                                     </li>
+                                    <li class="nav-item">
+                                        <a href="{{ route('enviosType','Reprogramado') }}"
+                                            class="{{ Request::path() === 'envios/estado/Reprogramado' ? 'nav-link active' : 'nav-link' }}">
+                                            <i class="far fa-circle nav-icon"></i>
+                                            <p>Reprogramado</p>
+                                        </a>
+                                    </li>
                                     @endcan
                                     @can('Cliente')
                                     <li class="nav-item">

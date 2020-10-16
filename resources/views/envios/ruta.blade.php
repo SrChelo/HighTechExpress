@@ -14,6 +14,7 @@
       <th scope="col">Description</th>
       <th scope="col">Status</th>
       <th scope="col"></th>
+      <th scope="col"></th>
       @can('Administrador')
       <th scope="col"></th>
       @endcan
@@ -41,6 +42,9 @@
             @case('En Camino')
             <td class="bg-warning">
             @break
+            @case('Reprogramado')
+            <td class="bg-primary">
+            @break
             @case('Terminado')
             <td class="bg-success">
             @break
@@ -50,6 +54,12 @@
             <form action="{{ route('end', $envio->id) }}" method="POST" class="justify-content-center">
                 @csrf
                 <button type="submit" class="btn btn-secondary">Finalizar</button>
+              </form>
+            </td>
+            <td class="">
+            <form action="{{ route('rep', $envio->id) }}" method="POST" class="justify-content-center">
+                @csrf
+                <button type="submit" class="btn btn-secondary">Reprogramar</button>
               </form>
             </td>
             </tr>
