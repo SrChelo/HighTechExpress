@@ -1,0 +1,17 @@
+------------------Adentro de la carpeta del proyecto -----------------------------------------
+
+composer require laravel/ui "^2.4"
+php artisan ui vue --auth     <---------- todo no
+npm install
+npm run dev
+php artisan migrate
+
+-> El archivo images.rar descomprimir su contenido en la ruta dentro del proyecto
+   "storage/app/public/"
+
+-> Ejecutar el siguiente comando: php artisan storage:link
+
+-> Ir a "public/css/app.css" y borrar la primera linea
+
+
+http://localhost/HighTechExpress/public/            <- Url del Proyecto
